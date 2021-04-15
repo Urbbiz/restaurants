@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Restaurant;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -20,7 +21,9 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-        //
+        $restaurants = Restaurant::all();
+        return view('restaurant.index', ['restaurants' => $restaurants]);
+ 
     }
 
     /**
@@ -43,7 +46,34 @@ class RestaurantController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make(
+            $request->all(),
+             [
+           'restaurant_title' => ['required','regex:/^[\pL\s\-]+$/u', 'min:3', 'max:100'],
+           'restaurant_customers' => ['required', 'numeric', 'min:0','max:1000'],
+           'restaurant_employees' => ['required', 'numeric', 'min:0','max:1000'],
+           'menu_id' => ['required',],
+            ],
+            [
+            'restaurant_title.required' => 'Title cannot be empty!',
+            'restaurant_title.required' => 'Title cannot be empty',
+            'restaurant_title.regex' => 'be kableliu',
+            ]
+       );
+       if ($validator->fails()) {
+           $request->flash();
+           return redirect()->back()->withErrors($validator);
+       }
+
+        $restaurant = new Restaurant;
+    $restaurant->title = $request->restaurant_title;
+    $restaurant->customers = $request->restaurant_customers;
+    $restaurant->employees = $request->restaurant_employees;
+    $restaurant->menu_id = $request->menu_id;
+    $restaurant->save();
+    return redirect()->route('restaurant.index')->with('success_message', 'New restaurant added!');
+
+
     }
 
     /**
