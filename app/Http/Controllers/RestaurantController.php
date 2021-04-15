@@ -19,12 +19,53 @@ class RestaurantController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    public function index(Request $request)
     {
+       //FILTRAVIMAS
+       $menus = Menu::all();
+    //    $menus = Menu::orderBy('title')->get();  //sita eilute dedam jeigu iskart norim isrusiuoti pagal kazka
+      
+       
+
+       if($request->menu_id) {
+           $restaurants = Restaurant::where('menu_id',$request->menu_id) ->get();
+           $filterBy = $request->menu_id;
+        //    $restaurants->append(['menu_id' => $request->menu_id]);
+           
+           
+       }
+       else {
+        
         $restaurants = Restaurant::all();
-        return view('restaurant.index', ['restaurants' => $restaurants]);
+        $restaurants = Restaurant::orderBy('title')->get();
+       }
+
+       // Rusiavimas SORT
+       if($request->sort && 'asc' == $request->sort) {
+           $restaurants = $restaurants ->sortBy('title');
+           $sortBy = 'asc';
+       }
+       elseif($request->sort && 'desc' == $request->sort) {
+           $restaurants = $restaurants ->sortByDesc('title');
+           $sortBy = 'desc';
+       }
+
+   return view('restaurant.index', [
+    // $menus = Menu::orderBy('title')->get();
+       'menus' => $menus, 
+       'restaurants' => $restaurants,
+       'filterBy'=>$filterBy ?? 0,
+       'sortBy' => $sortBy ?? ''
+       ]);
+   }
+
+    // public function index()
+    // {
+    //     $restaurants = Restaurant::all();
+    //     return view('restaurant.index', ['restaurants' => $restaurants]);
  
-    }
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -147,6 +188,7 @@ class RestaurantController extends Controller
      */
     public function destroy(Restaurant $restaurant)
     {
-        //
+        $restaurant->delete();
+        return redirect()->route('restaurant.index')->with('success_message', 'Restaurant deleted!');
     }
 }

@@ -7,8 +7,8 @@
           <div class="card">
             <div class="card-header">
                <h2>Menu List</h2>
-               <a href="{{route('menu.index',['sort'=>'title'])}}">Sort by Title</a>
-               <a href="{{route('menu.index',['sort'=>'weight'])}}">Sort by Weight</a>
+               <a href="{{route('menu.index',['sort'=>'title'])}}">Sort by Title |</a>
+               <a href="{{route('menu.index',['sort'=>'weight'])}}">Sort by Weight |</a>
                <a href="{{route('menu.index')}}">Default</a>
             </div>
                <div class="card-body">
@@ -19,7 +19,8 @@
                     <li class="list-group-item list-line">
                       <div>
                         <h4>{{$menu->title}}</h4>
-                        <h6> Price: {{$menu->price}} </h6>
+                        <h6> Price: {{$menu->price}} EUR </h6>
+                        <h6> Weight: {{$menu->weight}} grams </h6>
                         <h6> About: {{$menu->about}} </h6>
                       </div> 
                       <div class="list-line__buttons">

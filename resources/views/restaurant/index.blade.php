@@ -7,7 +7,7 @@
                 <div class="card-header">
 
                     <h2>Resaurants List</h2>
-                    {{-- <div class="make-inline">
+                    <div class="make-inline">
                         <form action="{{route('restaurant.index')}}" method="get" class="make-inline ">
                             <div class="form-group make-inline">
                                 <label>Menus: </label>
@@ -34,7 +34,7 @@
                         </form>
 
                         <a href="{{route('restaurant.index')}}" class="btn btn-info">Clear filter</a>
-                    </div> --}}
+                    </div>
 
 
 
