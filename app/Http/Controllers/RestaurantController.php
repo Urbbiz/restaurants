@@ -95,7 +95,10 @@ class RestaurantController extends Controller
      */
     public function edit(Restaurant $restaurant)
     {
-        //
+        // return view('restaurant.edit', ['restaurant' => $restaurant]);
+
+        $menus = Menu::orderBy('title')->get();
+        return view('restaurant.edit', ['restaurant' => $restaurant,'menus' => $menus->sortBy('title')]);
     }
 
     /**
@@ -107,7 +110,33 @@ class RestaurantController extends Controller
      */
     public function update(Request $request, Restaurant $restaurant)
     {
-        //
+        $validator = Validator::make(
+            $request->all(),
+             [
+           'restaurant_title' => ['required','regex:/^[\pL\s\-]+$/u', 'min:3', 'max:100'],
+           'restaurant_customers' => ['required', 'numeric', 'min:0','max:1000'],
+           'restaurant_employees' => ['required', 'numeric', 'min:0','max:1000'],
+           'menu_id' => ['required',],
+            ],
+            [
+            'restaurant_title.required' => 'Title cannot be empty!',
+            'restaurant_title.required' => 'Title cannot be empty',
+            'restaurant_title.regex' => 'be kableliu',
+            ]
+       );
+       if ($validator->fails()) {
+           $request->flash();
+           return redirect()->back()->withErrors($validator);
+       }
+
+        
+    $restaurant->title = $request->restaurant_title;
+    $restaurant->customers = $request->restaurant_customers;
+    $restaurant->employees = $request->restaurant_employees;
+    $restaurant->menu_id = $request->menu_id;
+    $restaurant->save();
+    return redirect()->route('restaurant.index')->with('success_message', 'New restaurant added!');
+
     }
 
     /**
